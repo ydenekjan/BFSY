@@ -26,7 +26,7 @@ const ListOverview = () => {
   const [filteredLists, setFilteredLists] = useState(lists);
 
   useEffect(() => {
-    filterData();
+    if (lists) filterData();
   }, [lists]);
 
   const filterData = () => {

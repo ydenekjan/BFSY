@@ -6,47 +6,47 @@ import ListDetail from "./ui/views/ListDetail/ListDetail.tsx";
 import SignIn from "./ui/views/SignIn.tsx";
 import NewList from "./ui/views/ListDetail/NewList.tsx";
 import axios from "axios";
-import {UserProvider} from "./utils/UserContext.tsx";
+import { UserProvider } from "./utils/UserContext.tsx";
 
-axios.defaults.baseURL = "http://localhost:8000/";
-axios.defaults.withCredentials = true
+axios.defaults.baseURL = import.meta.env.VITE_DB_URL;
+axios.defaults.withCredentials = true;
 
 function App() {
   return (
     <BrowserRouter>
-        <UserProvider>
-      <div className={"w-screen h-screen"}>
-        <Navbar />
-        <Routes>
-          <Route
-            path={"/"}
-            element={
-              <MainView>
-                <ListOverview />
-              </MainView>
-            }
-          />
-          <Route
-            path={"/detail/:id"}
-            element={
-              <MainView>
-                <ListDetail />
-              </MainView>
-            }
-          />
-          <Route
-            path={"/novy"}
-            element={
-              <MainView>
-                <NewList />
-              </MainView>
-            }
-          />
+      <UserProvider>
+        <div className={"w-screen h-screen"}>
+          <Navbar />
+          <Routes>
+            <Route
+              path={"/"}
+              element={
+                <MainView>
+                  <ListOverview />
+                </MainView>
+              }
+            />
+            <Route
+              path={"/detail/:id"}
+              element={
+                <MainView>
+                  <ListDetail />
+                </MainView>
+              }
+            />
+            <Route
+              path={"/novy"}
+              element={
+                <MainView>
+                  <NewList />
+                </MainView>
+              }
+            />
 
-          <Route path={"/login"} element={<SignIn />} />
-        </Routes>
-      </div>
-        </UserProvider>
+            <Route path={"/login"} element={<SignIn />} />
+          </Routes>
+        </div>
+      </UserProvider>
     </BrowserRouter>
   );
 }
