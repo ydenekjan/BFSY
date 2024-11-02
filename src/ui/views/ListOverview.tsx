@@ -1,5 +1,5 @@
 import ListTile from "../ListTile.tsx";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import { useNavigate } from "react-router-dom";
 import { Chip } from "@mui/material";
@@ -67,7 +67,7 @@ const ListOverview = () => {
               ? () => {
                   setFilters({ ...filters, ownedOnly: !filters.ownedOnly });
                 }
-              : null
+              : undefined
           }
           onClick={() => {
             setFilters({ ...filters, ownedOnly: !filters.ownedOnly });
@@ -85,7 +85,7 @@ const ListOverview = () => {
                     showArchived: filters.showArchived,
                   });
                 }
-              : null
+              : undefined
           }
           onClick={() => {
             setFilters({

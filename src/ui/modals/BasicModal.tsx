@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Box,
   Button,
@@ -47,7 +46,7 @@ const BasicModal = ({ modalProps }: { modalProps: TModalProps }) => {
             <CloseIcon />
           </IconButton>
         </Box>
-        <Typography sx={{ display: "flex", py: 2, px: 3 }} variant="text">
+        <Typography sx={{ display: "flex", py: 2, px: 3 }}>
           {text.body}
         </Typography>
         <Divider />

@@ -17,9 +17,10 @@ import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import AddCircleRoundedIcon from "@mui/icons-material/AddCircleRounded";
 import CheckIcon from "@mui/icons-material/Check";
 import SaveIcon from "@mui/icons-material/Save";
-import React, { useEffect, useRef, useState } from "react";
+import { BaseSyntheticEvent, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
+  TList,
   TListModalProps,
   TModal,
   TModalProps,
@@ -34,7 +35,7 @@ import ArchiveIcon from "@mui/icons-material/Archive";
 
 const ListDetail = () => {
   const params = useParams();
-  const inputRef = useRef(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
   const listId = params.id;
   const navigate = useNavigate();
   const [isHovered, setIsHovered] = useState<null | number>(null);
@@ -49,10 +50,10 @@ const ListDetail = () => {
     leavePage: false,
     leaveList: false,
   });
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<TList>({
     listName: "",
-    members: [],
     items: [],
+    members: [],
   });
   const { user } = useUser();
   const isAuthor = user?.fullName === formData.author;
@@ -67,7 +68,7 @@ const ListDetail = () => {
 
     setFormData({ ...formData, items: [...formData.items, newItem] });
     setNewItemName("");
-    inputRef.current.blur();
+    inputRef.current?.blur();
     setIsUpdated(true);
   };
 
@@ -87,7 +88,7 @@ const ListDetail = () => {
     setIsUpdated(true);
   };
 
-  const handleRemoveMember = (event) => {
+  const handleRemoveMember = (event: BaseSyntheticEvent) => {
     if (!isAuthor) return;
 
     const removedMember = event.currentTarget.dataset.fullName;
@@ -251,7 +252,7 @@ const ListDetail = () => {
                 key={idx}
                 label={member}
                 onDelete={
-                  isAuthor && isHovered === idx ? handleRemoveMember : null
+                  isAuthor && isHovered === idx ? handleRemoveMember : undefined
                 }
                 onClick={handleRemoveMember}
                 onMouseOver={() => setIsHovered(idx)}

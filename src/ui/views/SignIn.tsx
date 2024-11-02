@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { BaseSyntheticEvent, useState } from "react";
 import { TextField, Button, Divider } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -13,7 +13,7 @@ const SignIn = () => {
 
   const navigate = useNavigate();
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = async (event: BaseSyntheticEvent) => {
     event.preventDefault();
 
     axios

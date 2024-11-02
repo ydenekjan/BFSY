@@ -1,8 +1,8 @@
-import React, { SetStateAction } from "react";
+import React, { BaseSyntheticEvent, SetStateAction } from "react";
 import { TList, TModal } from "../types/types.ts";
 
 export const handleNewListMember = (
-  event: React.SyntheticEvent<HTMLSelectElement>,
+  event: BaseSyntheticEvent,
   data: TList,
   setData: React.Dispatch<SetStateAction<TList>>,
   handleModalState: (modal: TModal) => void,

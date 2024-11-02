@@ -34,12 +34,13 @@ export type TListModalProps = {
 };
 
 export type TList = {
+  _id?: string;
   listName: string;
-  author: string;
+  author?: string;
   items: TListItem[];
   members: string[];
-  dateCreated: string;
-  archived: boolean;
+  dateCreated?: string;
+  archived?: boolean;
 };
 
 export type TListItem = {

@@ -16,9 +16,10 @@ import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import AddCircleRoundedIcon from "@mui/icons-material/AddCircleRounded";
 import CheckIcon from "@mui/icons-material/Check";
 import SaveIcon from "@mui/icons-material/Save";
-import React, { useRef, useState } from "react";
+import { BaseSyntheticEvent, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
+  TList,
   TListModalProps,
   TModal,
   TModalProps,
@@ -30,19 +31,22 @@ import axios from "axios";
 import _ from "lodash";
 
 const NewList = () => {
-  const inputRef = useRef(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
   const navigate = useNavigate();
   const [isHovered, setIsHovered] = useState<null | number>(null);
   const [newItemName, setNewItemName] = useState("");
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<TList>({
     listName: "",
     members: [],
     items: [],
   });
-  const [modalOpen, setModalOpen] = useState({
-    newListMember: false,
+  const [modalOpen, setModalOpen] = useState<Record<TModal, boolean>>({
     deleteList: false,
+    archiveList: false,
+    leaveList: false,
+    newListMember: false,
     saveList: false,
+    leavePage: false,
   });
 
   const handleNewItem = () => {
@@ -51,9 +55,9 @@ const NewList = () => {
 
     setFormData({ ...formData, items: [...formData.items, newItem] });
     setNewItemName("");
-    inputRef.current.blur();
+    inputRef.current?.blur();
   };
-  const handleRemoveMember = (event) => {
+  const handleRemoveMember = (event: BaseSyntheticEvent) => {
     const removedMember = event.currentTarget.dataset.fullName;
 
     const members = formData.members.filter(
@@ -83,7 +87,10 @@ const NewList = () => {
   };
 
   const handleModalState = (modal: TModal) => {
-    setModalOpen({ ...modalOpen, [modal]: !modalOpen[modal] });
+    setModalOpen((prevState) => ({
+      ...prevState,
+      [modal]: !modalOpen[modal],
+    }));
   };
 
   const modalProps = defaultModalProps;
@@ -159,7 +166,7 @@ const NewList = () => {
                 data-full-name={member}
                 key={idx}
                 label={member}
-                onDelete={isHovered === idx ? handleRemoveMember : null}
+                onDelete={isHovered === idx ? handleRemoveMember : undefined}
                 onClick={handleRemoveMember}
                 onMouseOver={() => setIsHovered(idx)}
                 onMouseOut={() => setIsHovered(null)}

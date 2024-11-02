@@ -2,8 +2,9 @@ import { Chip, Divider } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import ArchiveIcon from "@mui/icons-material/Archive";
 import dayjs from "dayjs";
+import { TList } from "../utils/types/types.ts";
 
-const ListTile = ({ listData }) => {
+const ListTile = ({ listData }: { listData: TList }) => {
   const navigate = useNavigate();
 
   return (

@@ -1,4 +1,4 @@
-const MainView = ({ children }) => {
+const MainView = ({ children }: { children: React.ReactNode }) => {
   return (
     <div
       className={
