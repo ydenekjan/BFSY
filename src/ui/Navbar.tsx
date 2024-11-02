@@ -1,7 +1,9 @@
 import { Avatar } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import {useUser} from "../utils/UserContext.tsx";
 
 const Navbar = () => {
+  const {user} = useUser()
   const navigate = useNavigate();
 
   return (
@@ -18,9 +20,9 @@ const Navbar = () => {
       </h1>
       <div
         onClick={() => navigate("/login")}
-        className={" cursor-pointer flex items-center gap-4 text-xl text-white"}
+        className={"cursor-pointer flex items-center gap-4 text-xl text-white"}
       >
-        <div>{JSON.parse(localStorage.getItem("currentUser")).fullName}</div>
+        <div>{user?.fullName}</div>
         <Avatar />
       </div>
     </section>

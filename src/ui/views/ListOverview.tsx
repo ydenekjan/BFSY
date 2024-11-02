@@ -4,37 +4,49 @@ import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import { useNavigate } from "react-router-dom";
 import { Chip } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
-import lists from "../../../../mockup_data/shopping-lists.json";
+import { useUser } from "../../utils/UserContext.tsx";
+import axios from "axios";
+import { TList } from "../../utils/types/types.ts";
 
 const ListOverview = () => {
   const navigate = useNavigate();
-
+  const { user } = useUser();
   const [filters, setFilters] = useState({
     ownedOnly: false,
-    disableArchived: true,
+    showArchived: false,
   });
-
-  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-  const baseData = lists.filter(
-    (list) =>
-      list.author === currentUser.name ||
-      list.members.includes(currentUser.name),
-  );
-  const [filteredLists, setFilteredLists] = useState(baseData);
+  const [lists, setLists] = useState<TList[]>([]);
 
   useEffect(() => {
-    const newData = baseData.filter((item) => {
-      if (filters.ownedOnly && filters.disableArchived) {
-        return item.author === currentUser.name && item.active;
-      } else if (filters.ownedOnly) {
-        return item.author === currentUser.name;
-      } else if (filters.disableArchived) {
-        return item.active;
-      } else {
+    axios.get("/lists/all").then((res) => {
+      setLists(res.data);
+    });
+  }, []);
+
+  const [filteredLists, setFilteredLists] = useState(lists);
+
+  useEffect(() => {
+    filterData();
+  }, [lists]);
+
+  const filterData = () => {
+    const newData = lists.filter((item) => {
+      const { ownedOnly, showArchived } = filters;
+      const { archived, author } = item;
+
+      if (ownedOnly && showArchived) return author === user?.fullName;
+      if (ownedOnly) {
+        return author === user?.fullName && !archived;
+      } else if (showArchived) {
         return true;
       }
+      return !archived;
     });
     setFilteredLists(newData);
+  };
+
+  useEffect(() => {
+    filterData();
   }, [filters]);
 
   return (
@@ -66,11 +78,11 @@ const ListOverview = () => {
           label={"Zobrazit archivované"}
           deleteIcon={<CheckIcon />}
           onDelete={
-            !filters.disableArchived
+            filters.showArchived
               ? () => {
                   setFilters({
                     ...filters,
-                    showArchived: !filters.disableArchived,
+                    showArchived: filters.showArchived,
                   });
                 }
               : null
@@ -78,19 +90,23 @@ const ListOverview = () => {
           onClick={() => {
             setFilters({
               ...filters,
-              disableArchived: !filters.disableArchived,
+              showArchived: !filters.showArchived,
             });
           }}
-          color={!filters.disableArchived ? "primary" : "default"}
+          color={filters.showArchived ? "primary" : "default"}
         />
       </section>
       <section className={"py-8 w-full h-min flex flex-col gap-4"}>
-        {filteredLists.length > 0 ? (
-          filteredLists.map((value, idx) => (
-            <ListTile key={idx} listData={value} />
-          ))
+        {user ? (
+          filteredLists.length > 0 ? (
+            filteredLists.map((value, idx) => (
+              <ListTile key={idx} listData={value} />
+            ))
+          ) : (
+            <div>Zadání neodpovídají žádné seznamy.</div>
+          )
         ) : (
-          <div>Zadání neodpovídají žádné seznamy.</div>
+          <div>Pro zobrazení seznamů se přihlaste.</div>
         )}
       </section>
     </div>

@@ -1,22 +1,30 @@
-import React from "react";
+import { useEffect, useState } from "react";
 import { Box, MenuItem, MenuList, Modal, Typography } from "@mui/material";
-import users from "../../../../mockup_data/users.json";
+import axios from "axios";
+import { useUser } from "../../utils/UserContext.tsx";
+import { handleNewListMember } from "../../utils/listDetail/handleNewListMember.ts";
+import { TListModalProps } from "../../utils/types/types.ts";
 
 const NewListMemberModal = ({
   listMemberModalProps,
 }: {
-  listMemberModalProps: {
-    isOpen: boolean;
-    onClose: () => () => void;
-    onAccept: (selectedUser: string) => void;
-    members: string[];
-  };
+  listMemberModalProps: TListModalProps;
 }) => {
-  const { isOpen, onClose, onAccept, members } = listMemberModalProps;
-  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  const { isOpen, listData, setListData, handleState, setIsUpdated } =
+    listMemberModalProps;
+  const [users, setUsers] = useState([]);
+  const { user } = useUser();
+  useEffect(() => {
+    axios.get("/users/all").then((res) => setUsers(res.data));
+  }, []);
+
+  const modalUsers = users.filter(
+    ({ fullName }) =>
+      !listData.members.includes(fullName) && fullName !== user?.fullName,
+  );
 
   return (
-    <Modal open={isOpen} onClose={onClose}>
+    <Modal open={isOpen} onClose={() => handleState("newListMember")}>
       <Box
         sx={{
           position: "absolute" as "absolute",
@@ -33,17 +41,27 @@ const NewListMemberModal = ({
           Vyberte nového člena
         </Typography>
         <MenuList sx={{ pb: 0 }}>
-          {users
-            .filter(
-              ({ fullName }) =>
-                !members.includes(fullName) &&
-                fullName !== currentUser.fullName,
-            )
-            .map(({ fullName, username }) => (
-              <MenuItem key={username} value={fullName} onClick={onAccept}>
+          {modalUsers.length > 0 ? (
+            modalUsers.map(({ fullName, username }) => (
+              <MenuItem
+                key={username}
+                data-full-name={fullName}
+                onClick={(event) => {
+                  handleNewListMember(
+                    event,
+                    listData,
+                    setListData,
+                    handleState,
+                  );
+                  setIsUpdated(true);
+                }}
+              >
                 {fullName}
               </MenuItem>
-            ))}
+            ))
+          ) : (
+            <p>Žádní dostupní uživatelé</p>
+          )}
         </MenuList>
       </Box>
     </Modal>

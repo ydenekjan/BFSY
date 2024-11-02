@@ -6,12 +6,15 @@ import ListDetail from "./ui/views/ListDetail/ListDetail.tsx";
 import SignIn from "./ui/views/SignIn.tsx";
 import NewList from "./ui/views/ListDetail/NewList.tsx";
 import axios from "axios";
+import {UserProvider} from "./utils/UserContext.tsx";
 
 axios.defaults.baseURL = "http://localhost:8000/";
+axios.defaults.withCredentials = true
 
 function App() {
   return (
     <BrowserRouter>
+        <UserProvider>
       <div className={"w-screen h-screen"}>
         <Navbar />
         <Routes>
@@ -43,6 +46,7 @@ function App() {
           <Route path={"/login"} element={<SignIn />} />
         </Routes>
       </div>
+        </UserProvider>
     </BrowserRouter>
   );
 }

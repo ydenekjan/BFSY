@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { TextField, Button, Divider } from "@mui/material";
-import users from "../../../../mockup_data/users.json";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useUser } from "../../utils/UserContext.tsx";
 
 const SignIn = () => {
+  const { setUser } = useUser();
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -15,10 +16,15 @@ const SignIn = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    axios.get("/user/670542c083025116d2a833bb").then((res) => {
-      localStorage.setItem("currentUser", JSON.stringify(res.data));
-      navigate("/");
-    });
+    axios
+      .post("/users/auth", formData)
+      .then((res) => {
+        setUser(res.data);
+        navigate("/");
+      })
+      .catch(() => {
+        setUser(null);
+      });
   };
 
   return (
@@ -36,6 +42,7 @@ const SignIn = () => {
               <TextField
                 autoFocus={true}
                 value={formData.username}
+                autoComplete={"username"}
                 onChange={({ target }) => {
                   setFormData({ ...formData, username: target.value });
                 }}
@@ -43,12 +50,13 @@ const SignIn = () => {
                 sx={{ width: 1 }}
               />
               <TextField
+                type={"password"}
                 value={formData.password}
+                autoComplete={"current-password"}
                 onChange={({ target }) => {
                   setFormData({ ...formData, password: target.value });
                 }}
-                placeholder={"Heslo (nechte prázdné)"}
-                disabled={true}
+                placeholder={"Heslo"}
                 sx={{ width: 1 }}
               />
             </div>

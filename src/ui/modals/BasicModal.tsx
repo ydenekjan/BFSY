@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import CloseIcon from "@mui/icons-material/Close";
-import { TModalProps } from "../../types/types.ts";
+import { TModalProps } from "../../utils/types/types.ts";
 
 const BasicModal = ({ modalProps }: { modalProps: TModalProps }) => {
   const { isOpen, type, func, ctaButton, text }: TModalProps = modalProps;
@@ -43,7 +43,7 @@ const BasicModal = ({ modalProps }: { modalProps: TModalProps }) => {
           <Typography variant="h6" component="h2">
             {text.headline}
           </Typography>
-          <IconButton onClick={() => func.onClose("archiveList")}>
+          <IconButton onClick={() => func.onClose(type)}>
             <CloseIcon />
           </IconButton>
         </Box>
@@ -66,14 +66,14 @@ const BasicModal = ({ modalProps }: { modalProps: TModalProps }) => {
               borderColor: grey[800],
             }}
             variant={"outlined"}
-            onClick={() => func.onClose("archiveList")}
+            onClick={() => func.onClose(type)}
           >
             Zrušit
           </Button>
           <Button
             color={ctaButton.color}
             variant={"contained"}
-            onClick={func.onAccept}
+            onClick={() => func.onAccept()}
           >
             {ctaButton.text}
           </Button>
